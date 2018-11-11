@@ -1,2 +1,2 @@
-# ddgc
+# ddgc 🎮
 Distributed Democratic Game Control
