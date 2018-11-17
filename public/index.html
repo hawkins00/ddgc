@@ -1,0 +1,113 @@
+<html>
+
+<head>
+    <title>Express</title>
+    <link rel="stylesheet" href="/stylesheets/style.css">
+    <link rel="icon" href="favicon.png">
+    <style>
+        body {
+            padding: 0;
+            margin: 0;
+            background-image: radial-gradient(#55a, #004);
+            /*              linear-gradient(-45deg,#224,transparent,#113),
+                          linear-gradient(45deg,#224,transparent,#113),
+                          linear-gradient(-45deg,#224,transparent,#113),
+                          linear-gradient(45deg,#224,transparent,#113);*/
+            position: relative;
+        }
+
+        #video {
+            /*background-color: rgb(200, 225, 255);*/
+            background-image: radial-gradient(#000, #222);
+            border-bottom-left-radius: 20px;
+            border-bottom-right-radius: 20px;
+            border: 1px solid rgba(128, 128, 128, .4);
+            border-top: none;
+            height: 49%;
+            width: 720px;
+            margin: 0 auto;
+            font-size: 16em;
+            text-align: center;
+            color: rgba(1, 1, 1, .33);
+        }
+
+        #wrapper {
+            height: 50%;
+            overflow: hidden;
+        }
+
+        #controller {
+            height: 768px;
+            width: 1024px;
+            background: url(/images/controller.webp) no-repeat;
+            background-size: contain;
+            background-position: center;
+            margin-left: auto;
+            margin-right: auto;
+            position: relative;
+            transform: scale(.5);
+            transform-origin: top center;
+        }
+
+        .pressable {
+            cursor: grab;
+        }
+
+        .pressing {
+            cursor: grabbing;
+        }
+
+        .button {
+            border-radius: 50px;
+            height: 100px;
+            position: absolute;
+            transform: rotate(45deg);
+            width: 100px;
+        }
+
+        .button:hover {
+            background-blend-mode: lighten;
+            /*background-color: rgba(255, 255, 255, 0.6);*/
+            background-image: radial-gradient(rgba(170, 190, 210, .6) 55%, rgba(222, 222, 255, .5) 60%, transparent 60%);
+        }
+
+        #button-a {
+            left: 762px;
+            top: 403px;
+        }
+
+        #button-a:hover {
+            background-blend-mode: soft-light;
+            background-image: url(/images/xbox_360_controller-small.png), radial-gradient(rgba(170, 210, 190, .6) 55%, rgba(222, 255, 222, .5) 60%, transparent 60%);
+        }
+
+        #button-b {
+            left: 851px;
+            top: 335px;
+        }
+
+        #button-x {
+            left: 684px;
+            top: 338px;
+        }
+
+        #button-y {
+            left: 771px;
+            top: 269px;
+        }
+    </style>
+</head>
+
+<body>
+<div id="video">🎮</div>
+<div id="wrapper">
+    <div id="controller">
+        <div id="button-a" class="pressable button"></div>
+        <div id="button-b" class="pressable button"></div>
+        <div id="button-x" class="pressable button"></div>
+        <div id="button-y" class="pressable button"></div>
+    </div>
+</div>
+</body>
+
+</html>
