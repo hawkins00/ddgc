@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="/stylesheets/style.css">
     <script src="/javascripts/socket.io.js"></script>
     <script src="/javascripts/jquery.min.js"></script>
+    <script src="/javascripts/modernizr.webp.js"></script>
     <!--
     <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.js"></script>
@@ -29,9 +30,9 @@
             border-bottom-right-radius: 20px;
             border: 1px solid rgba(128, 128, 128, .4);
             border-top: none;
-            height: 49%;
+            height: 50%;
             width: 720px;
-            margin: 0 auto;
+            margin: 0 auto -1px;
             text-align: center;
             overflow: hidden;
             position: relative;
@@ -50,19 +51,25 @@
         }
 
         #video>.loader {
-            animation: 2s ease-in-out infinite rotate-gamepad;
-            color: rgba(0, 0, 0, .5);
+            animation: 3s ease-in-out infinite rotate-gamepad;
+            color: rgba(0, 0, 0, .4);
             display: inline-block;
             font-size: 16em;
         }
+        @keyframes fade-output {
+            100% {opacity: 0;}
+        }
         #video>#output {
             color: #aaa;
-            font-size: 25px;
+            font-size: 32px;
             font-weight: bold;
             position: absolute;
             bottom: 10px;
             right: 10px;
-            text-shadow: 0 0 4px #00B7FF;
+            text-shadow: 0 0 2px 2px #00bbff;
+        }
+        #video>#output>span {
+            animation: 3s ease-in-out 1 fade-output;
         }
 
         #wrapper {
@@ -73,14 +80,19 @@
         #gamepad {
             height: 768px;
             width: 1024px;
-            background: url(/images/controller.webp) no-repeat;
+            background: url(/images/controller.webp) no-repeat center;
             background-size: contain;
-            background-position: center;
             margin-left: auto;
             margin-right: auto;
             position: relative;
             transform: scale(.5);
             transform-origin: top center;
+            transition-duration: .5s;
+        }
+        /* Edge is scared of webp */
+        .no-webp #gamepad {
+            background: url(/images/controller.png) no-repeat center;
+            background-size: contain;
         }
 
         .pressable {
@@ -92,26 +104,32 @@
         }
 
         .button {
-            border-radius: 50px;
-            height: 100px;
+            border-radius: 36px;
+            height: 72px;
             position: absolute;
             transform: rotate(45deg);
-            width: 100px;
+            width: 72px;
+            transition-duration: .33s;
+
+            display: block;
         }
 
         .button:hover {
             background-blend-mode: lighten;
             /*background-color: rgba(255, 255, 255, 0.6);*/
-            background-image: radial-gradient(rgba(170, 170, 210, .6) 55%, rgba(222, 222, 255, .5) 60%, transparent 60%);
+            /*background-image: radial-gradient(rgba(170, 170, 210, .6) 55%, rgba(222, 222, 255, .5) 60%, transparent 60%);*/
         }
 
         #button-Ⓐ {
-            left: 762px;
-            top: 403px;
+            left: 775px;
+            top: 418px;
+            height: 68px;
         }
 
-        #button-Ⓐ:hover {
-            left: 762px;
+        #button-Ⓐ:active, #button-Ⓐ:hover, #button-Ⓐ:focus {
+            box-shadow: 0 0 16px 16px rgba(0, 183, 255, .8);
+        }
+        #button-Ⓐ:active {
             background-blend-mode: lighten;
             background-image: radial-gradient(rgba(170, 210, 170, .6) 55%, rgba(222, 255, 222, .5) 60%, transparent 60%);
         }
@@ -152,7 +170,8 @@
         .direction:hover {
             background-blend-mode: lighten;
             /*background-image: linear-gradient(rgba(0, 183, 255, .6) 55%, rgba(0, 183, 255, .3) 60%, transparent 60%);*/
-            background-color: rgba(0, 183, 255, .4);
+            /*background-color: rgba(0, 183, 255, .4);*/
+            box-shadow: 0 0 8px 4px rgba(0, 183, 255, .4);
         }
 
         #direction-▲ {
@@ -181,14 +200,14 @@
 </div>
 <div id="wrapper">
     <div id="gamepad">
-        <div id="button-Ⓐ" class="pressable button"></div>
-        <div id="button-Ⓑ" class="pressable button"></div>
-        <div id="button-Ⓧ" class="pressable button"></div>
-        <div id="button-Ⓨ" class="pressable button"></div>
-        <div id="direction-▲" class="pressable direction"></div>
-        <div id="direction-▶" class="pressable direction"></div>
-        <div id="direction-▼" class="pressable direction"></div>
-        <div id="direction-◀" class="pressable direction"></div>
+        <div id="button-Ⓐ" class="pressable button" tabindex="1"></div>
+        <div id="button-Ⓑ" class="pressable button" tabindex="2"></div>
+        <div id="button-Ⓧ" class="pressable button" tabindex="3"></div>
+        <div id="button-Ⓨ" class="pressable button" tabindex="4"></div>
+        <div id="direction-▲" class="pressable direction" tabindex="5"></div>
+        <div id="direction-▶" class="pressable direction" tabindex="6"></div>
+        <div id="direction-▼" class="pressable direction" tabindex="7"></div>
+        <div id="direction-◀" class="pressable direction" tabindex="8"></div>
     </div>
 </div>
 
@@ -200,7 +219,7 @@
 
     socket.on('stuff', function (data) {
         console.log(data);
-        $('#output').append(' ' + data.button);
+        $('#output').append('<span>' + data.button + '</span>');
     });
 
     $('.pressable.button, .pressable.direction')
@@ -210,12 +229,16 @@
             });
         });
 
+
+    /* resize gamepad to fit bottom 50% of screen */
     const setScale = () => {
         let scale = $('#wrapper').css('height').split('px')[0] / 768;
         $('#gamepad').css({'transform': 'scale(' + scale + ')'})
     };
     $(window).on('load', setScale);
     $(window).on('resize', setScale);
+
+
 </script>
 </body>
 </html>
