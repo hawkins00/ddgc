@@ -2,8 +2,14 @@
 
 <head>
     <title>Express</title>
-    <link rel="stylesheet" href="/stylesheets/style.css">
     <link rel="icon" href="favicon.png">
+    <link rel="stylesheet" href="/stylesheets/style.css">
+    <script src="/javascripts/socket.io.js"></script>
+    <script src="/javascripts/jquery.min.js"></script>
+    <!--
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.js"></script>
+    -->
     <style>
         body {
             padding: 0;
@@ -18,7 +24,7 @@
 
         #video {
             /*background-color: rgb(200, 225, 255);*/
-            background-image: radial-gradient(#000, #222);
+            background-image: radial-gradient(#333, #000);
             border-bottom-left-radius: 20px;
             border-bottom-right-radius: 20px;
             border: 1px solid rgba(128, 128, 128, .4);
@@ -26,9 +32,37 @@
             height: 49%;
             width: 720px;
             margin: 0 auto;
-            font-size: 16em;
             text-align: center;
-            color: rgba(1, 1, 1, .33);
+            overflow: hidden;
+            position: relative;
+        }
+
+        @keyframes rotate-gamepad {
+            0% {transform: rotate(0);}
+            30% {transform: rotate(375deg);}
+            40% {transform: rotate(345deg);}
+            45% {transform: rotate(360deg);}
+            50% {transform: rotate(365deg) scale(1.5);}
+            55% {transform: rotate(360deg);}
+            60% {transform: rotate(357deg);}
+            65% {transform: rotate(360deg);}
+            100% {transform: rotate(360deg);}
+        }
+
+        #video>.loader {
+            animation: 2s ease-in-out infinite rotate-gamepad;
+            color: rgba(0, 0, 0, .5);
+            display: inline-block;
+            font-size: 16em;
+        }
+        #video>#output {
+            color: #aaa;
+            font-size: 25px;
+            font-weight: bold;
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            text-shadow: 0 0 4px #00B7FF;
         }
 
         #wrapper {
@@ -36,7 +70,7 @@
             overflow: hidden;
         }
 
-        #controller {
+        #gamepad {
             height: 768px;
             width: 1024px;
             background: url(/images/controller.webp) no-repeat;
@@ -68,46 +102,120 @@
         .button:hover {
             background-blend-mode: lighten;
             /*background-color: rgba(255, 255, 255, 0.6);*/
-            background-image: radial-gradient(rgba(170, 190, 210, .6) 55%, rgba(222, 222, 255, .5) 60%, transparent 60%);
+            background-image: radial-gradient(rgba(170, 170, 210, .6) 55%, rgba(222, 222, 255, .5) 60%, transparent 60%);
         }
 
-        #button-a {
+        #button-Ⓐ {
             left: 762px;
             top: 403px;
         }
 
-        #button-a:hover {
-            background-blend-mode: soft-light;
-            background-image: url(/images/xbox_360_controller-small.png), radial-gradient(rgba(170, 210, 190, .6) 55%, rgba(222, 255, 222, .5) 60%, transparent 60%);
+        #button-Ⓐ:hover {
+            left: 762px;
+            background-blend-mode: lighten;
+            background-image: radial-gradient(rgba(170, 210, 170, .6) 55%, rgba(222, 255, 222, .5) 60%, transparent 60%);
         }
 
-        #button-b {
+        #button-Ⓑ{
             left: 851px;
             top: 335px;
         }
+        #button-Ⓑ:hover {
+            background-blend-mode: lighten;
+            background-image: radial-gradient(rgba(210, 170, 170, .6) 55%, rgba(255, 222, 222, .5) 60%, transparent 60%);
+        }
 
-        #button-x {
+        #button-Ⓧ {
             left: 684px;
             top: 338px;
         }
+        #button-Ⓧ:hover {
+            background-blend-mode: lighten;
+            background-image: radial-gradient(rgba(170, 170, 210, .6) 55%, rgba(222, 222, 255, .5) 60%, transparent 60%);
+        }
 
-        #button-y {
+        #button-Ⓨ {
             left: 771px;
             top: 269px;
+        }
+        #button-Ⓨ:hover {
+            background-blend-mode: lighten;
+            background-image: radial-gradient(rgba(210, 210, 170, .6) 55%, rgba(255, 255, 222, .5) 60%, transparent 60%);
+        }
+
+        .direction {
+            border-radius: 5px;
+            height: 50px;
+            width: 50px;
+            position: absolute;
+        }
+        .direction:hover {
+            background-blend-mode: lighten;
+            /*background-image: linear-gradient(rgba(0, 183, 255, .6) 55%, rgba(0, 183, 255, .3) 60%, transparent 60%);*/
+            background-color: rgba(0, 183, 255, .4);
+        }
+
+        #direction-▲ {
+            left: 335px;
+            top: 475px;
+        }
+        #direction-▶ {
+            left: 385px;
+            top: 525px;
+        }
+        #direction-▼ {
+            left: 335px;
+            top: 575px;
+        }
+        #direction-◀ {
+            left: 285px;
+            top: 525px;
         }
     </style>
 </head>
 
 <body>
-<div id="video">🎮</div>
+<div id="video">
+    <div class="loader">🎮</div>
+    <div id="output"></div>
+</div>
 <div id="wrapper">
-    <div id="controller">
-        <div id="button-a" class="pressable button"></div>
-        <div id="button-b" class="pressable button"></div>
-        <div id="button-x" class="pressable button"></div>
-        <div id="button-y" class="pressable button"></div>
+    <div id="gamepad">
+        <div id="button-Ⓐ" class="pressable button"></div>
+        <div id="button-Ⓑ" class="pressable button"></div>
+        <div id="button-Ⓧ" class="pressable button"></div>
+        <div id="button-Ⓨ" class="pressable button"></div>
+        <div id="direction-▲" class="pressable direction"></div>
+        <div id="direction-▶" class="pressable direction"></div>
+        <div id="direction-▼" class="pressable direction"></div>
+        <div id="direction-◀" class="pressable direction"></div>
     </div>
 </div>
-</body>
 
+
+
+
+<script type="text/javascript">
+    const socket = io.connect('//localhost:3000/');
+
+    socket.on('stuff', function (data) {
+        console.log(data);
+        $('#output').append(' ' + data.button);
+    });
+
+    $('.pressable.button, .pressable.direction')
+        .on('click', function() {
+            socket.emit('press', {
+                'button': this.id.split('-')[1]
+            });
+        });
+
+    const setScale = () => {
+        let scale = $('#wrapper').css('height').split('px')[0] / 768;
+        $('#gamepad').css({'transform': 'scale(' + scale + ')'})
+    };
+    $(window).on('load', setScale);
+    $(window).on('resize', setScale);
+</script>
+</body>
 </html>
