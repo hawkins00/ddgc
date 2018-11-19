@@ -101,7 +101,7 @@ io.on('connection', function (socket) {
 
     socket.on('press', (data) => {
         console.log('button ' + data.button);
-        socket.emit('stuff', {
+        io.emit('stuff', {
             'button': data.button
         });
     });
