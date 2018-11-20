@@ -96,13 +96,27 @@ function onListening() {
 
 
 
+
+//let legalButtons = ["Ⓐ", "Ⓑ", "Ⓧ", "Ⓨ", "▲", "▶", "▼", "◀"];
+let legalPresses = {
+    A: 'Ⓐ',
+    B: 'Ⓑ',
+    X: 'Ⓧ',
+    Y: 'Ⓨ',
+    up: '▲',
+    right: '▶',
+    down: '▼',
+    left: '◀'
+};
+
 io.on('connection', function (socket) {
     console.log('client connected');
 
     socket.on('press', (data) => {
         console.log('button ' + data.button);
-        io.emit('stuff', {
-            'button': data.button
+        if (!legalPresses.hasOwnProperty(data.button)) return;
+        io.emit('winning-button', {
+            'button': legalPresses[data.button]
         });
     });
 
