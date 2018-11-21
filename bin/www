@@ -103,11 +103,21 @@ let legalPresses = {
     B: 'Ⓑ',
     X: 'Ⓧ',
     Y: 'Ⓨ',
+    LB: 'LB',
+    LT: 'LT',
+    L3: 'L3',
+    RB: 'RB',
+    RT: 'RT',
+    R3: 'R3',
+    select: 'select',
+    start: 'start',
     up: '▲',
     right: '▶',
     down: '▼',
     left: '◀'
 };
+
+let key;
 
 io.on('connection', function (socket) {
     console.log('client connected');
@@ -115,13 +125,22 @@ io.on('connection', function (socket) {
     socket.on('press', (data) => {
         console.log('button ' + data.button);
         if (!legalPresses.hasOwnProperty(data.button)) return;
-        io.emit('winning-button', {
-            'button': legalPresses[data.button]
-        });
+        key = data.button;
     });
 
     socket.on('disconnect', function () {
         console.log('client disconnected');
     });
 });
+
+let emission = () => {
+    if (key !== '') {
+        io.emit('winning-button', {
+            'button': legalPresses[key]
+        });
+        key = '';
+    }
+};
+
+setInterval(emission, 1000);
 
