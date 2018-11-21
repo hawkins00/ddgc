@@ -104,7 +104,7 @@
             outline: none;
         }
         .pressable:active {
-            transition-duration: .167s;
+            /*transition-duration: .167s;*/
         }
 
         .pressing {
@@ -236,14 +236,30 @@
 </div>
 <div id="wrapper">
     <div id="gamepad">
-        <a id="button-A" class="pressable button" tabindex="1" href></a>
-        <a id="button-B" class="pressable button" tabindex="2" href></a>
-        <a id="button-X" class="pressable button" tabindex="3" href></a>
-        <a id="button-Y" class="pressable button" tabindex="4" href></a>
-        <a id="direction-up" class="pressable direction" tabindex="5" href></a>
-        <a id="direction-right" class="pressable direction" tabindex="6" href></a>
-        <a id="direction-down" class="pressable direction" tabindex="7" href></a>
-        <a id="direction-left" class="pressable direction" tabindex="8" href></a>
+        <a id="direction-up" class="pressable direction" tabindex="1" href></a>
+        <a id="direction-right" class="pressable direction" tabindex="2" href></a>
+        <a id="direction-down" class="pressable direction" tabindex="3" href></a>
+        <a id="direction-left" class="pressable direction" tabindex="4" href></a>
+        <a id="button-A" class="pressable button" tabindex="5" href></a>
+        <a id="button-B" class="pressable button" tabindex="6" href></a>
+        <a id="button-X" class="pressable button" tabindex="7" href></a>
+        <a id="button-Y" class="pressable button" tabindex="8" href></a>
+        <a id="button-select" class="pressable button" tabindex="9" href></a>
+        <a id="button-start" class="pressable button" tabindex="10" href></a>
+        <a id="button-LB" class="pressable button" tabindex="11" href></a>
+        <a id="button-LT" class="pressable button" tabindex="12" href></a>
+        <a id="button-RB" class="pressable button" tabindex="13" href></a>
+        <a id="button-RT" class="pressable button" tabindex="14" href></a>
+        <a id="direction-up-left-stick" class="pressable direction" tabindex="15" href></a>
+        <a id="direction-right-left-stick" class="pressable direction" tabindex="16" href></a>
+        <a id="direction-down-left-stick" class="pressable direction" tabindex="17" href></a>
+        <a id="direction-left-left-stick" class="pressable direction" tabindex="18" href></a>
+        <a id="button-L3" class="pressable button" tabindex="19" href></a>
+        <a id="direction-up-right-stick" class="pressable direction" tabindex="20" href></a>
+        <a id="direction-right-right-stick" class="pressable direction" tabindex="21" href></a>
+        <a id="direction-down-right-stick" class="pressable direction" tabindex="22" href></a>
+        <a id="direction-left-right-stick" class="pressable direction" tabindex="23" href></a>
+        <a id="button-R3" class="pressable button" tabindex="24" href></a>
     </div>
 </div>
 
@@ -252,6 +268,7 @@
 
 <script type="text/javascript">
 
+    let currentPress = '';
     const socket = io.connect('//localhost:3000/');
 
     socket.on('winning-button', function (data) {
@@ -261,17 +278,46 @@
 
     $('.pressable')
         .on('keypress', function(e) {
+            /*
+            event.cancelBubble = true;
+            let x;
+            for (let prop in e) {
+                x += "\n" + prop + ": " + e[prop];
+            }
+            x += "\n";
+            for (let prop in event) {
+                x += "\n" + prop + ": " + event[prop];
+            }
+            alert(x);
+            alert(e.keyCode);
+            */
+            currentPress = this.id.split('-')[1];
             e.preventDefault();
-            socket.emit('press', {
-                'button': this.id.split('-')[1]
-            });
         })
         .on('click', function(e) {
             e.preventDefault(); // in case of enter
-            this.blur(); // remove highlight after mouse click
+            /*
+            let x;
+            for (let prop in e) {
+                x += "\n" + prop + ": " + e[prop];
+            }
+            x += "\n";
+            for (let prop in event) {
+                x += "\n" + prop + ": " + event[prop];
+            }
+            alert(x);
+            */
+
+            // trying to differentiate mouse clicks from hitting enter
+            if (e.screenX !== 0 && e.screenY !== 0) {
+                this.blur(); // remove highlight after mouse click
+            }
+            /*
             socket.emit('press', {
                 'button': this.id.split('-')[1]
             });
+            */
+            currentPress = this.id.split('-')[1];
         });
 
     /*
@@ -293,6 +339,16 @@
     $(window).on('load', setScale).on('resize', setScale);
 
     /* */
+    sendPress = () => {
+        if (currentPress !== '') {
+            socket.emit('press', {
+                'button': currentPress
+            });
+            currentPress = '';
+        }
+    };
+
+    setInterval(sendPress, 1000);
 
 </script>
 </body>
