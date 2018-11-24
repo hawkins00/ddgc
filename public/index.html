@@ -57,9 +57,9 @@
             font-size: 16em;
         }
         @keyframes fade-output {
-            0% {width: 0; overflow: hidden;}
-            10% {width: auto;}
-            66.7% {opacity: 1;}
+            0% {}
+            10% {}
+            60% {opacity: 1;}
             100% {opacity: 0;}
         }
         #video>#output {
@@ -89,7 +89,7 @@
             margin-left: auto;
             margin-right: auto;
             position: relative;
-            transform: scale(.5);
+            transform: scale(.05);
             transform-origin: top center;
             transition-duration: .5s;
         }
@@ -103,29 +103,17 @@
             cursor: grab;
             outline: none;
         }
-        .pressable:active {
-            /*transition-duration: .167s;*/
-        }
-
-        .pressing {
-            cursor: grabbing;
-        }
 
         .button {
             border-radius: 36px;
             height: 72px;
             position: absolute;
-            transform: rotate(45deg);
             width: 72px;
-
             display: block;
         }
-
-        .button:hover {
-            background-blend-mode: lighten;
-            /*background-color: rgba(255, 255, 255, 0.6);*/
-            /*background-image: radial-gradient(rgba(170, 170, 210, .6) 55%, rgba(222, 222, 255, .5) 60%, transparent 60%);*/
-            /*box-shadow: 0 0 16px 16px rgba(0, 183, 255, .8);*/
+        .trigger {
+            position: absolute;
+            display: block;
         }
 
         #button-A {
@@ -134,11 +122,19 @@
             height: 68px;
         }
 
-        .pressable:active, .pressable:hover, .pressable:focus {
-            box-shadow: 0 0 16px 16px rgba(0, 183, 255, .8);
+        .pressable {
             transition-duration: .33s;
         }
-        #button-A:active {
+        .pressable:active, .pressable:hover, .pressable:focus {
+            box-shadow: 0 0 16px 16px rgba(0, 183, 255, .8);
+        }
+        .pressable:active, .pressable.active {
+            background-color: rgba(0, 183, 255, .8);
+            cursor: grabbing;
+            transition-duration: 0s;
+        }
+
+        #button-A:active, #button-A.active {
             background-color: rgba(192, 255, 192, .5);
             /*
             background-blend-mode: lighten;
@@ -149,8 +145,9 @@
         #button-B {
             left: 862px;
             top: 347px;
+            border-radius: 42px 30px;
         }
-        #button-B:active {
+        #button-B:active, #button-B.active {
             background-blend-mode: lighten;
             /*background-image: radial-gradient(rgba(210, 170, 170, .6) 55%, rgba(255, 222, 222, .5) 60%, transparent 60%);*/
             background-color: rgba(255, 192, 192, .5);
@@ -160,7 +157,7 @@
             left: 697px;
             top: 351px;
         }
-        #button-X:active {
+        #button-X:active, #button-X.active {
             background-blend-mode: lighten;
             /*background-image: radial-gradient(rgba(170, 170, 210, .6) 55%, rgba(222, 222, 255, .5) 60%, transparent 60%);*/
             background-color: rgba(192, 192, 255, .5);
@@ -170,10 +167,73 @@
             left: 783px;
             top: 285px;
         }
-        #button-Y:active {
+        #button-Y:active, #button-Y.active {
             background-blend-mode: lighten;
             /*background-image: radial-gradient(rgba(210, 210, 170, .6) 55%, rgba(255, 255, 222, .5) 60%, transparent 60%);*/
             background-color: rgba(223, 223, 192, .5);
+        }
+
+        #button-A, #button-B, #button-X, #button-Y {
+            /*transform: rotate(45deg);*/
+        }
+
+        #button-L3 {
+            border-radius: 70px / 55px;
+            left: 131px;
+            top: 361px;
+            height: 122px;
+            width: 140px;
+        }
+        #button-R3 {
+            border-radius: 64px / 55px;
+            left: 588px;
+            top: 514px;
+            height: 114px;
+            width: 129px;
+        }
+        #button-select {
+            border-radius: 22px;
+            left: 371px;
+            top: 370px;
+            height: 44px;
+            width: 62px;
+        }
+        #button-start {
+            border-radius: 20px;
+            left: 595px;
+            top: 373px;
+            height: 40px;
+            width: 55px;
+        }
+        #button-LB {
+            border-radius: 120px 70px 20px 0 / 40px 48px 20px 0;
+            height: 55px;
+            width: 190px;
+            left: 105px;
+            top: 167px;
+            transform: rotate(-10deg);
+        }
+        #button-RB {
+            border-radius: 70px 120px 0 20px / 48px 40px 0 20px;
+            height: 55px;
+            width: 190px;
+            left: 730px;
+            top: 167px;
+            transform: rotate(10deg);
+        }
+        #button-LT {
+            border-radius: 15px 11px 0 0 / 60px 20px 0 0;
+            height: 85px;
+            width: 76px;
+            left: 197px;
+            top: 78px;
+        }
+        #button-RT {
+            border-radius: 11px 15px 0 8px / 20px 60px 0 20px;
+            height: 85px;
+            width: 76px;
+            left: 753px;
+            top: 78px;
         }
 
         .direction {
@@ -181,6 +241,7 @@
             height: 40px;
             width: 40px;
             position: absolute;
+            z-index: 10;
         }
         .direction:hover {
             background-blend-mode: lighten;
@@ -190,42 +251,80 @@
             box-shadow: 0 0 16px 16px rgba(0, 183, 255, .8);
             transition-duration: .33s;
         }
-        .direction:active {
-            background-color: rgba(0, 183, 255, .6);
-        }
 
         #direction-up {
             left: 335px;
             top: 488px;
         }
-        #direction-up:active, #direction-up:focus, #direction-up:hover {
-            box-shadow: 0 -8px 16px 16px rgba(0, 183, 255, .8);
-        }
         #direction-right {
             left: 390px;
             top: 533px;
-        }
-        #direction-right:active, #direction-right:focus, #direction-right:hover {
-            box-shadow: 8px 0 16px 16px rgba(0, 183, 255, .8);
         }
         #direction-down {
             left: 335px;
             top: 572px;
         }
-        #direction-down:active, #direction-down:focus, #direction-down:hover {
-            box-shadow: 0 8px 16px 16px rgba(0, 183, 255, .8);
-        }
-        #direction-down:active {
-            background-blend-mode: lighten;
-            background-color: rgba(0, 183, 255, .4);
-        }
         #direction-left {
             left: 278px;
             top: 533px;
         }
-        #direction-left:active, #direction-left:focus, #direction-left:hover {
+        #direction-up-left-stick {
+            left: 177px;
+            top: 373px;
+        }
+        #direction-right-left-stick {
+            left: 222px;
+            top: 409px;
+        }
+        #direction-down-left-stick {
+            left: 181px;
+            top: 439px;
+        }
+        #direction-left-left-stick {
+            left: 136px;
+            top: 408px;
+        }
+        #direction-up-right-stick {
+            left: 630px;
+            top: 527px;
+        }
+        #direction-right-right-stick {
+            left: 670px;
+            top: 561px;
+        }
+        #direction-down-right-stick {
+            left: 632px;
+            top: 588px;
+        }
+        #direction-left-right-stick {
+            left: 592px;
+            top: 561px;
+        }
+        .up {
+            border-radius: 20px 20px 20px 20px / 8px 8px 32px 32px;
+        }
+        .up:active, .up:focus, .up:hover {
+            box-shadow: 0 -8px 16px 16px rgba(0, 183, 255, .8);
+        }
+        .right {
+            border-radius: 32px 8px 8px 32px / 20px 20px 20px 20px
+        }
+        .right:active, .right:focus, .right:hover {
+            box-shadow: 8px 0 16px 16px rgba(0, 183, 255, .8);
+        }
+        .down {
+            border-radius: 20px 20px 20px 20px / 32px 32px 8px 8px;
+        }
+        .down:active, .down:focus, .down:hover {
+            box-shadow: 0 8px 16px 16px rgba(0, 183, 255, .8);
+        }
+        .left {
+            border-radius: 8px 32px 32px 8px / 20px 20px 20px 20px
+        }
+        .left:active, .left:focus, .left:hover {
             box-shadow: -8px 0 16px 16px rgba(0, 183, 255, .8);
         }
+
     </style>
 </head>
 
@@ -236,29 +335,29 @@
 </div>
 <div id="wrapper">
     <div id="gamepad">
-        <a id="direction-up" class="pressable direction" tabindex="1" href></a>
-        <a id="direction-right" class="pressable direction" tabindex="2" href></a>
-        <a id="direction-down" class="pressable direction" tabindex="3" href></a>
-        <a id="direction-left" class="pressable direction" tabindex="4" href></a>
+        <a id="direction-up" class="pressable direction up" tabindex="1" href></a>
+        <a id="direction-right" class="pressable direction right" tabindex="2" href></a>
+        <a id="direction-down" class="pressable direction down" tabindex="3" href></a>
+        <a id="direction-left" class="pressable direction left" tabindex="4" href></a>
         <a id="button-A" class="pressable button" tabindex="5" href></a>
         <a id="button-B" class="pressable button" tabindex="6" href></a>
         <a id="button-X" class="pressable button" tabindex="7" href></a>
         <a id="button-Y" class="pressable button" tabindex="8" href></a>
         <a id="button-select" class="pressable button" tabindex="9" href></a>
         <a id="button-start" class="pressable button" tabindex="10" href></a>
-        <a id="button-LB" class="pressable button" tabindex="11" href></a>
-        <a id="button-LT" class="pressable button" tabindex="12" href></a>
-        <a id="button-RB" class="pressable button" tabindex="13" href></a>
-        <a id="button-RT" class="pressable button" tabindex="14" href></a>
-        <a id="direction-up-left-stick" class="pressable direction" tabindex="15" href></a>
-        <a id="direction-right-left-stick" class="pressable direction" tabindex="16" href></a>
-        <a id="direction-down-left-stick" class="pressable direction" tabindex="17" href></a>
-        <a id="direction-left-left-stick" class="pressable direction" tabindex="18" href></a>
+        <a id="button-LB" class="pressable trigger" tabindex="11" href></a>
+        <a id="button-LT" class="pressable trigger" tabindex="12" href></a>
+        <a id="button-RB" class="pressable trigger" tabindex="13" href></a>
+        <a id="button-RT" class="pressable trigger" tabindex="14" href></a>
+        <a id="direction-up-left-stick" class="pressable direction up" tabindex="15" href></a>
+        <a id="direction-right-left-stick" class="pressable direction right" tabindex="16" href></a>
+        <a id="direction-down-left-stick" class="pressable direction down" tabindex="17" href></a>
+        <a id="direction-left-left-stick" class="pressable direction left" tabindex="18" href></a>
         <a id="button-L3" class="pressable button" tabindex="19" href></a>
-        <a id="direction-up-right-stick" class="pressable direction" tabindex="20" href></a>
-        <a id="direction-right-right-stick" class="pressable direction" tabindex="21" href></a>
-        <a id="direction-down-right-stick" class="pressable direction" tabindex="22" href></a>
-        <a id="direction-left-right-stick" class="pressable direction" tabindex="23" href></a>
+        <a id="direction-up-right-stick" class="pressable direction up" tabindex="20" href></a>
+        <a id="direction-right-right-stick" class="pressable direction right" tabindex="21" href></a>
+        <a id="direction-down-right-stick" class="pressable direction down" tabindex="22" href></a>
+        <a id="direction-left-right-stick" class="pressable direction left" tabindex="23" href></a>
         <a id="button-R3" class="pressable button" tabindex="24" href></a>
     </div>
 </div>
@@ -266,16 +365,14 @@
 
 
 
-<script type="text/javascript">
 
+<script type="text/javascript">
+    /// Setup ///
     let currentPress = '';
     const socket = io.connect('//localhost:3000/');
 
-    socket.on('winning-button', function (data) {
-        $('#output').append('<span>' + data.button + '</span>');
-        setTimeout(() => $('#output>span:first-child').remove(), 5000);
-    });
 
+    /// jQuery events ///
     $('.pressable')
         .on('keypress', function(e) {
             /*
@@ -291,6 +388,8 @@
             alert(x);
             alert(e.keyCode);
             */
+            $(this).addClass('active');
+            setTimeout(() => $(this).removeClass('active'), 333);
             currentPress = this.id.split('-')[1];
             e.preventDefault();
         })
@@ -309,8 +408,11 @@
             */
 
             // trying to differentiate mouse clicks from hitting enter
+            $(this).addClass('active');
+            setTimeout(() => $(this).removeClass('active'), 333);
             if (e.screenX !== 0 && e.screenY !== 0) {
-                this.blur(); // remove highlight after mouse click
+                setTimeout(() => $(this).blur(), 333);
+                //$(this).blur(); // remove highlight after mouse click
             }
             /*
             socket.emit('press', {
@@ -331,15 +433,24 @@
         */
 
 
-    /* scale gamepad image to fit bottom 50% of screen */
+    /// scale gamepad image on load/resize to fit bottom 50% of screen ///
     const setScale = () => {
         let scale = $('#wrapper').css('height').split('px')[0] / 768;
+        // 768px is the default height of the gamepad container
         $('#gamepad').css({'transform': 'scale(' + scale + ')'})
     };
     $(window).on('load', setScale).on('resize', setScale);
 
-    /* */
-    sendPress = () => {
+
+    /// Socket.io incoming ///
+    socket.on('winning-button', function (data) {
+        $('#output').append('<span>' + data.button + '</span>');
+        setTimeout(() => $('#output>span:first-child').remove(), 5000);
+    });
+
+
+    /// Socket.io outgoing ///
+    const sendPress = () => {
         if (currentPress !== '') {
             socket.emit('press', {
                 'button': currentPress
@@ -347,8 +458,27 @@
             currentPress = '';
         }
     };
+    setInterval(sendPress, 1000); // only send button press every 1000ms
 
-    setInterval(sendPress, 1000);
+
+    /// Gamepad API ///
+    window.addEventListener("gamepadconnected", function(e) {
+        console.log("Gamepad connected at index %d: %s. %d buttons, %d axes.",
+            e.gamepad.index, e.gamepad.id,
+            e.gamepad.buttons.length, e.gamepad.axes.length);
+    });
+    /*
+    $(window).on('gamepadconnected', function(e) {
+        console.log("Gamepad connected at index %d: %s. %d buttons, %d axes.",
+            e.gamepad.index, e.gamepad.id,
+            e.gamepad.buttons.length, e.gamepad.axes.length);
+    });
+    */
+
+    window.addEventListener("gamepaddisconnected", function(e) {
+        console.log("Gamepad disconnected from index %d: %s",
+            e.gamepad.index, e.gamepad.id);
+    });
 
 </script>
 </body>
