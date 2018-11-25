@@ -32,6 +32,7 @@
             border-top: none;
             height: 50%;
             width: 720px;
+            max-width: 99%;
             margin: 0 auto -1px;
             text-align: center;
             overflow: hidden;
@@ -58,7 +59,6 @@
         }
         @keyframes fade-output {
             0% {}
-            10% {}
             60% {opacity: 1;}
             100% {opacity: 0;}
         }
@@ -78,7 +78,9 @@
 
         #wrapper {
             height: 50%;
-            overflow: hidden;
+            /*overflow: hidden;*/
+            margin-left: auto;
+            margin-right: auto;
         }
 
         #gamepad {
@@ -90,7 +92,7 @@
             margin-right: auto;
             position: relative;
             transform: scale(.05);
-            transform-origin: top center;
+            transform-origin: top left;
             transition-duration: .5s;
         }
         /* Edge is scared of webp */
@@ -119,7 +121,7 @@
         #button-A {
             left: 775px;
             top: 418px;
-            height: 68px;
+            height: 67px;
         }
 
         .pressable {
@@ -132,6 +134,10 @@
             background-color: rgba(0, 183, 255, .8);
             cursor: grabbing;
             transition-duration: 0s;
+            box-shadow: 0 0 16px 16px rgba(64, 183, 96, .8) !important;
+        }
+        .pressable.sentPress {
+            box-shadow: 0 0 16px 16px rgba(0, 0, 0, .8) !important;
         }
 
         #button-A:active, #button-A.active {
@@ -144,8 +150,10 @@
 
         #button-B {
             left: 862px;
-            top: 347px;
-            border-radius: 42px 30px;
+            top: 350px;
+            height: 65px;
+            width: 71px;
+            border-radius: 48px 24px / 36px 28px;
         }
         #button-B:active, #button-B.active {
             background-blend-mode: lighten;
@@ -165,7 +173,8 @@
 
         #button-Y {
             left: 783px;
-            top: 285px;
+            top: 286px;
+            height: 67px;
         }
         #button-Y:active, #button-Y.active {
             background-blend-mode: lighten;
@@ -325,6 +334,13 @@
             box-shadow: -8px 0 16px 16px rgba(0, 183, 255, .8);
         }
 
+
+        @keyframes ring-out {
+            0% {}
+            60% {opacity: 1;}
+            100% {opacity: 0;}
+        }
+
     </style>
 </head>
 
@@ -369,75 +385,59 @@
 <script type="text/javascript">
     /// Setup ///
     let currentPress = '';
+    let currentPressID = '';
+    var gamepadCurrent = null;
+    var poller = null;
     const socket = io.connect('//localhost:3000/');
+    const tranDuration = 333;
 
+    var rAF = window.requestAnimationFrame;
 
     /// jQuery events ///
     $('.pressable')
         .on('keypress', function(e) {
-            /*
-            event.cancelBubble = true;
-            let x;
-            for (let prop in e) {
-                x += "\n" + prop + ": " + e[prop];
-            }
-            x += "\n";
-            for (let prop in event) {
-                x += "\n" + prop + ": " + event[prop];
-            }
-            alert(x);
-            alert(e.keyCode);
-            */
-            $(this).addClass('active');
-            setTimeout(() => $(this).removeClass('active'), 333);
-            currentPress = this.id.split('-')[1];
             e.preventDefault();
+            currentPressID = this.id;
+            currentPress = currentPressID.split('-')[1];
+
+            $(this).addClass('active');
+            setTimeout(() => $(this).removeClass('active'), tranDuration);
         })
-        .on('click', function(e) {
-            e.preventDefault(); // in case of enter
-            /*
-            let x;
-            for (let prop in e) {
-                x += "\n" + prop + ": " + e[prop];
-            }
-            x += "\n";
-            for (let prop in event) {
-                x += "\n" + prop + ": " + event[prop];
-            }
-            alert(x);
-            */
+        .on('click', function(e) { // keypress/enter
+            e.preventDefault();
+            currentPressID = this.id;
+            currentPress = currentPressID.split('-')[1];
+
+            $(this).addClass('active');
+            setTimeout(() => $(this).removeClass('active'), tranDuration);
 
             // trying to differentiate mouse clicks from hitting enter
-            $(this).addClass('active');
-            setTimeout(() => $(this).removeClass('active'), 333);
-            if (e.screenX !== 0 && e.screenY !== 0) {
-                setTimeout(() => $(this).blur(), 333);
-                //$(this).blur(); // remove highlight after mouse click
+            if (e.screenX === 0 && e.screenY === 0) { // enter
+            } else { // mouse click
+                setTimeout(() => $(this).blur(), tranDuration);
             }
-            /*
-            socket.emit('press', {
-                'button': this.id.split('-')[1]
-            });
-            */
-            currentPress = this.id.split('-')[1];
         });
-
-    /*
-    $('.pressable.button, .pressable.direction')
-        .on('keyup', () => {
-            alert('here');
-            socket.emit('press', {
-                'button': this.id.split('-')[1]
-            });
-        });
-        */
 
 
     /// scale gamepad image on load/resize to fit bottom 50% of screen ///
     const setScale = () => {
-        let scale = $('#wrapper').css('height').split('px')[0] / 768;
-        // 768px is the default height of the gamepad container
-        $('#gamepad').css({'transform': 'scale(' + scale + ')'})
+        let $wrapper = $('#wrapper');
+        // 1024px X 768px is the default size of #gamepad
+        /*
+        let scaleW = $wrapper.css('width').split('px')[0] / 1024;
+        let scaleH = $wrapper.css('height').split('px')[0] / 768;
+        */
+        let scaleW = window.innerWidth / 1024;
+        let scaleH = window.innerHeight / 768 / 2;
+        console.log(scaleW, scaleH);
+        let scale = scaleH < scaleW ? scaleH : scaleW;
+        $('#gamepad').css({
+            'transform': 'scale(' + scale + ')'
+        });
+        $wrapper.css({
+            'width': 1024 * scale + 'px',
+            'height': 768 * scale + 'px'
+        });
     };
     $(window).on('load', setScale).on('resize', setScale);
 
@@ -455,17 +455,61 @@
             socket.emit('press', {
                 'button': currentPress
             });
+            $('#' + currentPressID).addClass('sentPress');
+            setTimeout(() => $('.pressable').removeClass('sentPress'), tranDuration);
             currentPress = '';
+            currentPressID = '';
         }
     };
     setInterval(sendPress, 1000); // only send button press every 1000ms
 
 
     /// Gamepad API ///
+    function gamepadPoller() {
+        console.debug('started');
+        console.debug('buttons: ' + gamepadCurrent.buttons.length);
+        /*
+        for (let i = 0; i < 4; i++) {
+            console.debug(navigator.getGamepads()[i]);
+        }
+        */
+        for (let i = 0; i < gamepadCurrent.buttons.length; i++) {
+//            console.debug(i + ': ' + navigator.getGamepads()[2].buttons[i].pressed);
+            if (gamepadCurrent.buttons[i].pressed) {
+                console.debug('i: ' + i);
+//                $(pressable[button]).click()
+//                break;
+            } else {
+//                console.debug('-i: ' + i);
+            }
+        }
+//        rAF(gamepadPoller);
+        console.debug('ended');
+    }
+
     window.addEventListener("gamepadconnected", function(e) {
+        console.debug('connect');
+        /*
         console.log("Gamepad connected at index %d: %s. %d buttons, %d axes.",
             e.gamepad.index, e.gamepad.id,
             e.gamepad.buttons.length, e.gamepad.axes.length);
+            */
+
+        if (e.gamepad !== null
+            && e.gamepad.mapping === 'standard'
+            && e.gamepad.buttons.length > 0
+            && gamepadCurrent === null) {
+                gamepadCurrent = e.gamepad;
+                console.debug('found');
+                console.table(gamepadCurrent);
+                if (poller !== null) {
+                    clearInterval(poller);
+                    console.debug('poller: ' + poller);
+                }
+                poller = setInterval(gamepadPoller, 333);
+//      rAF(gamepadPoller);
+                console.debug('poller: ' + poller);
+        }
     });
     /*
     $(window).on('gamepadconnected', function(e) {
@@ -476,10 +520,24 @@
     */
 
     window.addEventListener("gamepaddisconnected", function(e) {
+        clearInterval(poller);
         console.log("Gamepad disconnected from index %d: %s",
             e.gamepad.index, e.gamepad.id);
     });
 
+    /*
+    let gamepads = navigator.getGamepads();
+    console.table(gamepads);
+    for (let i = 0; i < gamepads.length; i++) {
+        if (gamepads[i] !== null
+            && gamepads[i].mapping === 'standard'
+            && gamepads[i].buttons.length > 0) {
+            console.log(gamepads[i]);
+        } else {
+            console.log("nope");
+        }
+    }
+    */
 </script>
 </body>
 </html>
