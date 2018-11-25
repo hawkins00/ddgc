@@ -55,7 +55,7 @@
             animation: 3s ease-in-out infinite rotate-gamepad;
             color: rgba(0, 0, 0, .4);
             display: inline-block;
-            font-size: 16em;
+            font-size: 192px;
         }
         @keyframes fade-output {
             0% {}
@@ -127,14 +127,14 @@
         .pressable {
             transition-duration: .33s;
         }
-        .pressable:active, .pressable:hover, .pressable:focus {
+        .pressable:active, .pressable:hover, .pressable:focus, .pressable.active{
             box-shadow: 0 0 16px 16px rgba(0, 183, 255, .8);
         }
         .pressable:active, .pressable.active {
             background-color: rgba(0, 183, 255, .8);
             cursor: grabbing;
             transition-duration: 0s;
-            box-shadow: 0 0 16px 16px rgba(64, 183, 96, .8) !important;
+            /*box-shadow: 0 0 16px 16px rgba(64, 183, 96, .8) !important;*/
         }
         .pressable.sentPress {
             box-shadow: 0 0 16px 16px rgba(0, 0, 0, .8) !important;
@@ -390,8 +390,25 @@
     var poller = null;
     const socket = io.connect('//localhost:3000/');
     const tranDuration = 333;
+    const keyMap = {
+        0: 'button-A',
+        1: 'button-B',
+        2: 'button-X',
+        3: 'button-Y',
+        4: 'button-LB',
+        5: 'button-RB',
+        6: 'button-LT',
+        7: 'button-RT',
+        8: 'button-select',
+        9: 'button-start',
+        10: 'button-L3',
+        11: 'button-R3',
+        12: 'direction-up',
+        13: 'direction-down',
+        14: 'direction-left',
+        15: 'direction-right'
+    };
 
-    var rAF = window.requestAnimationFrame;
 
     /// jQuery events ///
     $('.pressable')
@@ -467,23 +484,32 @@
     /// Gamepad API ///
     function gamepadPoller() {
         console.debug('started');
-        console.debug('buttons: ' + gamepadCurrent.buttons.length);
+//        console.debug('buttons: ' + gamepadCurrent.buttons.length);
         /*
         for (let i = 0; i < 4; i++) {
             console.debug(navigator.getGamepads()[i]);
         }
         */
-        for (let i = 0; i < gamepadCurrent.buttons.length; i++) {
-//            console.debug(i + ': ' + navigator.getGamepads()[2].buttons[i].pressed);
-            if (gamepadCurrent.buttons[i].pressed) {
-                console.debug('i: ' + i);
-//                $(pressable[button]).click()
-//                break;
-            } else {
-//                console.debug('-i: ' + i);
+
+
+        for (let i = 0; i < navigator.getGamepads()[gamepadCurrent].buttons.length; i++) {
+            let val = navigator.getGamepads()[gamepadCurrent].buttons[i];
+            let pressed = val === 1.0;
+            if (typeof(val) === 'object') {
+                pressed = val.pressed;
+                val = val.value;
             }
+            if (!pressed) continue;
+            console.debug(i + ': ' + pressed);
+            console.debug(i + ': ' + val);
+            $('#' + keyMap[i]).click();
+            break;
+
+//            console.debug(i + ': ' + navigator.getGamepads()[2].buttons[i].pressed);
+//            if (gamepadCurrent.buttons[i].pressed) {
+//                console.debug('i: ' + i);
+//            }
         }
-//        rAF(gamepadPoller);
         console.debug('ended');
     }
 
@@ -499,14 +525,14 @@
             && e.gamepad.mapping === 'standard'
             && e.gamepad.buttons.length > 0
             && gamepadCurrent === null) {
-                gamepadCurrent = e.gamepad;
+                gamepadCurrent = e.gamepad.index;
                 console.debug('found');
                 console.table(gamepadCurrent);
                 if (poller !== null) {
                     clearInterval(poller);
                     console.debug('poller: ' + poller);
                 }
-                poller = setInterval(gamepadPoller, 333);
+                poller = setInterval(gamepadPoller, 83);
 //      rAF(gamepadPoller);
                 console.debug('poller: ' + poller);
         }
@@ -521,6 +547,7 @@
 
     window.addEventListener("gamepaddisconnected", function(e) {
         clearInterval(poller);
+        gamepadCurrent = null;
         console.log("Gamepad disconnected from index %d: %s",
             e.gamepad.index, e.gamepad.id);
     });
