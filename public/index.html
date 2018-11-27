@@ -1,7 +1,7 @@
 <html>
 
 <head>
-    <title>Express</title>
+    <title>DDGC</title>
     <link rel="icon" href="favicon.png">
     <link rel="stylesheet" href="/stylesheets/style.css">
     <script src="/javascripts/socket.io.js"></script>
@@ -15,12 +15,23 @@
         body {
             padding: 0;
             margin: 0;
-            background-image: radial-gradient(#55a, #004);
             /*              linear-gradient(-45deg,#224,transparent,#113),
                           linear-gradient(45deg,#224,transparent,#113),
                           linear-gradient(-45deg,#224,transparent,#113),
                           linear-gradient(45deg,#224,transparent,#113);*/
             position: relative;
+        }
+        body.blue {
+            background-image: radial-gradient(#55a, #004);
+        }
+        body.red {
+            background-image: radial-gradient(#a44, #400);
+        }
+        body.green {
+            background-image: radial-gradient(#4a4, #040);
+        }
+        body.yellow {
+            background-image: radial-gradient(#cc0, #660);
         }
 
         #video {
@@ -38,6 +49,11 @@
             overflow: hidden;
             position: relative;
         }
+        #video>iframe {
+            border: none;
+            width: 720px;
+            height: 100%;
+        }
 
         @keyframes rotate-gamepad {
             0% {transform: rotate(0);}
@@ -53,9 +69,14 @@
 
         #video>.loader {
             animation: 3s ease-in-out infinite rotate-gamepad;
-            color: rgba(0, 0, 0, .4);
+            color: rgba(0, 0, 0, .333);
             display: inline-block;
-            font-size: 192px;
+            font-size: 160px;
+            margin-top: 32px;
+            position: absolute;
+            top: 0;
+            left: calc(50% - 110px);
+            z-index: 10;
         }
         @keyframes fade-output {
             0% {}
@@ -69,11 +90,13 @@
             position: absolute;
             bottom: 10px;
             right: 10px;
-            text-shadow: 0 0 1px 0 #0bf;
         }
         #video>#output>span {
             animation: 5s ease-in-out 1 fade-output;
             animation-fill-mode: forwards;
+            padding-left: 6px;
+            text-shadow: 0 0 5px 5px #0bf;
+            background-color: black;
         }
 
         #wrapper {
@@ -81,6 +104,8 @@
             /*overflow: hidden;*/
             margin-left: auto;
             margin-right: auto;
+            transition-duration: .5s;
+            visibility: hidden;
         }
 
         #gamepad {
@@ -91,7 +116,7 @@
             margin-left: auto;
             margin-right: auto;
             position: relative;
-            transform: scale(.05);
+            transform: scale(.25);
             transform-origin: top left;
             transition-duration: .5s;
         }
@@ -137,7 +162,7 @@
             /*box-shadow: 0 0 16px 16px rgba(64, 183, 96, .8) !important;*/
         }
         .pressable.sentPress {
-            box-shadow: 0 0 16px 16px rgba(0, 0, 0, .8) !important;
+            box-shadow: 0 0 20px 20px rgba(0, 128, 64, .8) !important;
         }
 
         #button-A:active, #button-A.active {
@@ -344,8 +369,13 @@
     </style>
 </head>
 
-<body>
+<body class="blue">
 <div id="video">
+    <!--    src="http://player.twitch.tv/?video=338879839"-->
+<iframe
+    src="https://player.twitch.tv/?channel=bobross"
+    height="576"
+    width="1024"></iframe>
     <div class="loader">🎮</div>
     <div id="output"></div>
 </div>
@@ -439,24 +469,29 @@
     /// scale gamepad image on load/resize to fit bottom 50% of screen ///
     const setScale = () => {
         let $wrapper = $('#wrapper');
-        // 1024px X 768px is the default size of #gamepad
-        /*
-        let scaleW = $wrapper.css('width').split('px')[0] / 1024;
-        let scaleH = $wrapper.css('height').split('px')[0] / 768;
-        */
+        // 1024px x 768px is the default size of #gamepad
         let scaleW = window.innerWidth / 1024;
         let scaleH = window.innerHeight / 768 / 2;
-        console.log(scaleW, scaleH);
         let scale = scaleH < scaleW ? scaleH : scaleW;
         $('#gamepad').css({
             'transform': 'scale(' + scale + ')'
         });
         $wrapper.css({
             'width': 1024 * scale + 'px',
-            'height': 768 * scale + 'px'
+            'height': 768 * scale + 'px',
+            'visibility': 'visible'
         });
     };
     $(window).on('load', setScale).on('resize', setScale);
+
+    /// set background color randomly (default = blue) ///
+    const rando = Math.random();
+    if (rando > .666) {
+        $('body').addClass('green').removeClass('blue');
+    } else if (rando > .333) {
+        $('body').addClass('red').removeClass('blue');
+    } //else blue
+
 
 
     /// Socket.io incoming ///
@@ -494,11 +529,14 @@
 
         for (let i = 0; i < navigator.getGamepads()[gamepadCurrent].buttons.length; i++) {
             let val = navigator.getGamepads()[gamepadCurrent].buttons[i];
+
+            // process to get 'pressed' from https://github.com/luser/gamepadtest/blob/master/gamepadtest.js (CC0)
             let pressed = val === 1.0;
             if (typeof(val) === 'object') {
                 pressed = val.pressed;
                 val = val.value;
             }
+
             if (!pressed) continue;
             console.debug(i + ': ' + pressed);
             console.debug(i + ': ' + val);
