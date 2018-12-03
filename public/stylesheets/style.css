@@ -3,6 +3,7 @@ body {
     padding: 0;
     margin: 0;
     position: relative;
+    overflow: hidden;
 }
 body.blue {
     background-image: radial-gradient(#55a, #004);
@@ -11,7 +12,7 @@ body.red {
     background-image: radial-gradient(#a44, #400);
 }
 body.green {
-    background-image: radial-gradient(#4a4, #040);
+    background-image: radial-gradient(#494, #040);
 }
 body.yellow {
     background-image: radial-gradient(#cc0, #660);
@@ -19,8 +20,8 @@ body.yellow {
 
 #video {
     /*background-color: rgb(200, 225, 255);*/
-    /*background-image: radial-gradient(#333, #000);*/
-    background-image: url(../images/87871a0bc84edfb.gif);
+    background-image: radial-gradient(#333, #000);
+    /*background-image: url(../images/87871a0bc84edfb.gif);*/
     border-bottom-left-radius: 20px;
     border-bottom-right-radius: 20px;
     border: 1px solid rgba(128, 128, 128, .4);
@@ -77,8 +78,7 @@ body.yellow {
             transparent 130deg, transparent 169deg, white 172deg, white 187deg,
             transparent 190deg, transparent 229deg, white 232deg, white 247deg,
             transparent 250deg, transparent 289deg, white 292deg, white 307deg,
-            transparent 310deg, transparent 349deg, white 352deg, white 360deg),
-            url(../images/87871a0bc84edfb.gif);
+            transparent 310deg, transparent 349deg, white 352deg, white 360deg);
     /*
     background: repeating-radial-gradient(black, black 20px, white 20px, white 40px);
     */
@@ -177,7 +177,10 @@ body.yellow {
     /*box-shadow: 0 0 16px 16px rgba(64, 183, 96, .8) !important;*/
 }
 .pressable.sentPress {
+    /*
     box-shadow: 0 0 20px 20px rgba(0, 128, 64, .8) !important;
+    */
+    box-shadow: 0 0 20px 20px rgba(255, 183, 0, .8) !important;
 }
 
 #button-A:active, #button-A.active {
@@ -404,12 +407,10 @@ body.yellow {
     55% {transform: rotate(360deg) scale(1.5);}
     60% {transform: rotate(357deg);}
     65% {transform: rotate(360deg);}
-    /**/
-    75% {transform: rotate(360deg); opacity: 1}
+    75% {transform: rotate(360deg); opacity: 1;}
     99.9% {transform: scale(20); opacity: 0;}
     100% {transform: scale(0); opacity: 0;}
 }
-
 @keyframes fade-output {
     0% {}
     85% {opacity: 1;}
@@ -428,7 +429,12 @@ body.yellow {
     }
 }
 @keyframes rotate-timer {
-    0% {transform: rotate(0);}
-    96% {transform: rotate(360deg);}
-    100% {transform: rotate(360deg);}
+    0%, 2.5% {transform: rotate(0);}
+    97.5%, 100% {transform: rotate(360deg);}
+}
+@keyframes disappear {
+    0%, 90% {transform: scale(1); opacity: 1;}
+    90.01% {transform: scale(1); opacity: 1;}
+    99.99% {transform: scale(1); opacity: 0;}
+    100% {transform: scale(0); opacity: 0;}
 }
