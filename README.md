@@ -35,4 +35,4 @@ input).
 
 ## License
 
-This software is available under the [MIT License](blob/master/LICENSE).
+This software is available under the [MIT License](LICENSE).
