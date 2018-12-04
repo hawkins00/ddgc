@@ -19,9 +19,10 @@ body.yellow {
 }
 
 #video {
-    /*background-color: rgb(200, 225, 255);*/
+    background-image: url(../images/static.gif);
+    /*
     background-image: radial-gradient(#333, #000);
-    /*background-image: url(../images/static.gif);*/
+    */
     border-bottom-left-radius: 20px;
     border-bottom-right-radius: 20px;
     border: 1px solid rgba(128, 128, 128, .4);
@@ -44,13 +45,9 @@ body.yellow {
 #video>.loader {
     animation: 3s ease-in-out 1 rotate-gamepad;
     animation-fill-mode: forwards;
-    /*display: inline-block;*/
     font-size: 200px;
     text-align: center;
     line-height: 2000px;
-    /*
-    margin-top: 32px;
-    */
     position: absolute;
     /*
     top: 0;
@@ -64,13 +61,6 @@ body.yellow {
     transform-origin: 50% 50%;
     top: -800px;
     left: -640px;
-    /*
-    background:
-        linear-gradient(-45deg, #224, #fff),
-        linear-gradient(45deg, #224, #fff),
-        linear-gradient(-45deg, #224, #fff),
-        linear-gradient(45deg, #224, #fff);
-        */
     background-image: conic-gradient(
             white, white 7deg,
             transparent 10deg, transparent 49deg, white 52deg, white 67deg,
@@ -85,9 +75,6 @@ body.yellow {
 }
 #video>.loader>span {
     display: inline-block;
-    /*
-    animation: 1s ease-in-out infinite shake;
-    */
 }
 #video>#output {
     color: #aaa;
@@ -116,7 +103,6 @@ body.yellow {
 
 #wrapper {
     height: 50%;
-    /*overflow: hidden;*/
     margin-left: auto;
     margin-right: auto;
     transition-duration: .5s;
@@ -135,7 +121,7 @@ body.yellow {
     transform-origin: top left;
     transition-duration: .5s;
 }
-/* Edge is scared of webp */
+/* MS Edge is scared of webp */
 .no-webp #gamepad {
     background: url(../images/controller.png) no-repeat center;
     background-size: contain;
@@ -174,21 +160,13 @@ body.yellow {
     background-color: rgba(0, 183, 255, .8);
     cursor: grabbing;
     transition-duration: 0s;
-    /*box-shadow: 0 0 16px 16px rgba(64, 183, 96, .8) !important;*/
 }
 .pressable.sentPress {
-    /*
-    box-shadow: 0 0 20px 20px rgba(0, 128, 64, .8) !important;
-    */
     box-shadow: 0 0 20px 20px rgba(255, 183, 0, .8) !important;
 }
 
 #button-A:active, #button-A.active {
     background-color: rgba(192, 255, 192, .5);
-    /*
-    background-blend-mode: lighten;
-    background-image: radial-gradient(rgba(170, 210, 170, .6) 55%, rgba(222, 255, 222, .5) 60%, transparent 60%);
-    */
 }
 
 #button-B {
@@ -196,11 +174,10 @@ body.yellow {
     top: 350px;
     height: 65px;
     width: 71px;
-    border-radius: 48px 24px / 36px 28px;
+    border-radius: 37px 28px / 36px 28px;
 }
 #button-B:active, #button-B.active {
     background-blend-mode: lighten;
-    /*background-image: radial-gradient(rgba(210, 170, 170, .6) 55%, rgba(255, 222, 222, .5) 60%, transparent 60%);*/
     background-color: rgba(255, 192, 192, .5);
 }
 
@@ -210,7 +187,6 @@ body.yellow {
 }
 #button-X:active, #button-X.active {
     background-blend-mode: lighten;
-    /*background-image: radial-gradient(rgba(170, 170, 210, .6) 55%, rgba(222, 222, 255, .5) 60%, transparent 60%);*/
     background-color: rgba(192, 192, 255, .5);
 }
 
@@ -221,12 +197,7 @@ body.yellow {
 }
 #button-Y:active, #button-Y.active {
     background-blend-mode: lighten;
-    /*background-image: radial-gradient(rgba(210, 210, 170, .6) 55%, rgba(255, 255, 222, .5) 60%, transparent 60%);*/
     background-color: rgba(223, 223, 192, .5);
-}
-
-#button-A, #button-B, #button-X, #button-Y {
-    /*transform: rotate(45deg);*/
 }
 
 #button-L3 {
@@ -297,9 +268,6 @@ body.yellow {
 }
 .direction:hover {
     background-blend-mode: lighten;
-    /*background-image: linear-gradient(rgba(0, 183, 255, .6) 55%, rgba(0, 183, 255, .3) 60%, transparent 60%);*/
-    /*background-color: rgba(0, 183, 255, .4);*/
-    /*box-shadow: 0 0 8px 4px rgba(0, 183, 255, .4);*/
     box-shadow: 0 0 16px 16px rgba(0, 183, 255, .8);
     transition-duration: .33s;
 }
@@ -377,12 +345,7 @@ body.yellow {
     box-shadow: -8px 0 16px 16px rgba(0, 183, 255, .8);
 }
 
-
-@keyframes ring-out {
-    0% {}
-    60% {opacity: 1;}
-    100% {opacity: 0;}
-}
+/** Animations **/
 
 @keyframes shake {
     0% { transform: translate(10px, 10px) rotate(0deg); }
@@ -411,11 +374,13 @@ body.yellow {
     99.9% {transform: scale(20); opacity: 0;}
     100% {transform: scale(0); opacity: 0;}
 }
+
 @keyframes fade-output {
     0% {}
     85% {opacity: 1;}
     100% {opacity: 0;}
 }
+
 @keyframes timer {
     0% {
         left: calc(50% - 30px);
@@ -428,13 +393,14 @@ body.yellow {
         border-radius: 0;
     }
 }
+
 @keyframes rotate-timer {
     0%, 2.5% {transform: rotate(0);}
     97.5%, 100% {transform: rotate(360deg);}
 }
+
 @keyframes disappear {
-    0%, 90% {transform: scale(1); opacity: 1;}
-    90.01% {transform: scale(1); opacity: 1;}
-    99.99% {transform: scale(1); opacity: 0;}
+    90.01% {opacity: 1;}
+    99.99% {transform: scale(1);}
     100% {transform: scale(0); opacity: 0;}
 }
