@@ -116,7 +116,7 @@ function gamepadPoller() {
         let val = navigator.getGamepads()[gamepadCurrent].buttons[i];
 
         // process to get 'pressed' from https://github.com/luser/gamepadtest/blob/master/gamepadtest.js (CC0)
-        let pressed = val === 1.0;
+        let pressed = (val === 1.0);
         if (typeof(val) === 'object') {
             pressed = val.pressed;
             val = val.value;

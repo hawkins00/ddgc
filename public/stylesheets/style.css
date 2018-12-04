@@ -1,3 +1,5 @@
+/** body **/
+
 body {
     font-family: sans-serif;
     padding: 0;
@@ -18,11 +20,14 @@ body.yellow {
     background-image: radial-gradient(#cc0, #660);
 }
 
+
+/** video player **/
+
 #video {
-    background-image: url(../images/static.gif);
     /*
-    background-image: radial-gradient(#333, #000);
+    background-image: url(../images/static.gif);
     */
+    background-image: radial-gradient(#333, #000);
     border-bottom-left-radius: 20px;
     border-bottom-right-radius: 20px;
     border: 1px solid rgba(128, 128, 128, .4);
@@ -40,7 +45,6 @@ body.yellow {
     width: 720px;
     height: 100%;
 }
-
 
 #video>.loader {
     animation: 3s ease-in-out 1 rotate-gamepad;
@@ -76,6 +80,7 @@ body.yellow {
 #video>.loader>span {
     display: inline-block;
 }
+
 #video>#output {
     color: #aaa;
     font-family: Calibri, sans-serif;
@@ -100,6 +105,21 @@ body.yellow {
     border-top-right-radius: 12px;
     border-bottom-right-radius: 12px;
 }
+
+#video .static {
+    width: 1000px;
+    height: 1000px;
+    background-image: url(../images/static.gif);
+    z-index: 9;
+    position: absolute;
+    top: 0;
+    left: 0;
+    animation: 3s disappear;
+    animation-fill-mode: forwards;
+}
+
+
+/** gamepad interface **/
 
 #wrapper {
     height: 50%;
@@ -130,27 +150,6 @@ body.yellow {
 .pressable {
     cursor: grab;
     outline: none;
-}
-
-.button {
-    border-radius: 36px;
-    height: 72px;
-    position: absolute;
-    width: 72px;
-    display: block;
-}
-.trigger {
-    position: absolute;
-    display: block;
-}
-
-#button-A {
-    left: 775px;
-    top: 418px;
-    height: 67px;
-}
-
-.pressable {
     transition-duration: .33s;
 }
 .pressable:active, .pressable:hover, .pressable:focus, .pressable.active{
@@ -165,6 +164,24 @@ body.yellow {
     box-shadow: 0 0 20px 20px rgba(255, 183, 0, .8) !important;
 }
 
+.button {
+    border-radius: 36px;
+    height: 72px;
+    position: absolute;
+    width: 72px;
+    display: block;
+}
+
+.trigger {
+    position: absolute;
+    display: block;
+}
+
+#button-A {
+    left: 775px;
+    top: 418px;
+    height: 67px;
+}
 #button-A:active, #button-A.active {
     background-color: rgba(192, 255, 192, .5);
 }
@@ -345,21 +362,24 @@ body.yellow {
     box-shadow: -8px 0 16px 16px rgba(0, 183, 255, .8);
 }
 
-/** Animations **/
 
-@keyframes shake {
-    0% { transform: translate(10px, 10px) rotate(0deg); }
-    10% { transform: translate(-10px, -20px) rotate(-10deg); }
-    20% { transform: translate(-30px, 0px) rotate(10deg); }
-    30% { transform: translate(30px, 20px) rotate(0deg); }
-    40% { transform: translate(10px, -10px) rotate(10deg); }
-    50% { transform: translate(-10px, 20px) rotate(-10deg); }
-    60% { transform: translate(-30px, 10px) rotate(0deg); }
-    70% { transform: translate(30px, 10px) rotate(-10deg); }
-    80% { transform: translate(-10px, -10px) rotate(10deg); }
-    90% { transform: translate(10px, 20px) rotate(0deg); }
-    100% { transform: translate(10px, -20px) rotate(-10deg); }
+/** Timer **/
+
+#timer {
+    position: absolute;
+    bottom: 35px;
+    right: 35px;
+    width: 6px;
+    height: 30px;
+    background-color: rgba(160, 160, 160, .6);
+    animation: 1s ease-in rotate-timer infinite;
+    animation-delay: .1s;
+    transform-origin: 3px 27px;
+    border-radius: 3px 3px 3px 3px / 27px 27px 3px 3px;
 }
+
+
+/** Animations **/
 
 @keyframes rotate-gamepad {
     0% {transform: rotate(0);}
