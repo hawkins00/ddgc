@@ -2,7 +2,7 @@
 
 **Distributed Democratic Game Control**
 
-This repo (when complete) will provide a system allowing numerous game
+This software (when feature complete) will provide a system allowing numerous game
 players to work together to democratically choose moves for a shared
 online video game. The defining feature of this software is the ability
 to use an actual controller to enter input (instead of the usual chat
@@ -14,14 +14,17 @@ input).
 2. `cd` to the <samp>ddgc</samp> directory
 3. Run `nmp install`
 4. Run `nmp start`
-5. Open a browser to <samp>localhost:3000</samp>
+5. Open a browser to <samp>localhost:3000</samp> (or your environment's
+   <samp>PORT</samp>)
 6. Click the buttons directly, tab to them and press a keyboard button,
    or plug in a controller and press the buttons
 
 ## Information
 
-* Only one button press will be sent per second (as this system is
-  intended for online games where visual feedback can take many seconds.)
+* Only one button press will be sent per second, as this system is
+  intended for online games where visual feedback can take many seconds.
+  Buttons can be pressed multiple times per second, but only the last
+  button press before emitting to the server will count.
 * There are two indicators for this one-second timer. The first is a
   literal second hand in the lower right corner of the screen. The second
   is an orange highlight will appear around the button that was successfully
