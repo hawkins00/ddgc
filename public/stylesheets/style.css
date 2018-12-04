@@ -21,7 +21,7 @@ body.yellow {
 #video {
     /*background-color: rgb(200, 225, 255);*/
     background-image: radial-gradient(#333, #000);
-    /*background-image: url(../images/87871a0bc84edfb.gif);*/
+    /*background-image: url(../images/static.gif);*/
     border-bottom-left-radius: 20px;
     border-bottom-right-radius: 20px;
     border: 1px solid rgba(128, 128, 128, .4);
