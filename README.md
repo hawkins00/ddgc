@@ -8,7 +8,7 @@ online video game. The defining feature of this software is the ability
 to use an actual controller to enter input (instead of the usual chat
 input).
 
-## Installation
+## Installation & Use
 
 1. Clone this repo
 2. `cd` to the <samp>ddgc</samp> directory
@@ -35,4 +35,4 @@ input).
 
 ## License
 
-This software is available under the MIT License.
+This software is available under the [MIT License](blob/master/LICENSE).
