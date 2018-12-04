@@ -26,8 +26,8 @@ input).
   Buttons can be pressed multiple times per second, but only the last
   button press before emitting to the server will count.
 * There are two indicators for this one-second timer. The first is a
-  literal second hand in the lower right corner of the screen. The second
-  is an orange highlight will appear around the button that was successfully
+  literal second hand in the lower right corner of the screen. The other
+  is an orange highlight that appears around the button that was successfully
   sent to the server.
 * Up to five of the latest "winning" button presses will be visible on the
   game screen at a time.
