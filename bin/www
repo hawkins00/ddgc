@@ -91,12 +91,11 @@ function onListening() {
     debug('Listening on ' + bind);
 }
 
-
 /**
  * Socket interactions
  */
 
-let legalPresses = {
+const legalPresses = {
     A: 'Ⓐ',
     B: 'Ⓑ',
     X: 'Ⓧ',
@@ -126,12 +125,14 @@ io.on('connection', function (socket) {
         key = data.button;
     });
 
+    /*
     socket.on('disconnect', function () {
-        //console.debug('client disconnected');
+        console.debug('client disconnected');
     });
+    */
 });
 
-let emission = () => {
+const emission = () => {
     if (key !== '') {
         io.emit('winning-button', {
             'button': legalPresses[key]
