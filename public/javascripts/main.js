@@ -1,6 +1,7 @@
 /// Setup ///
 let currentPress = '';
 let currentPressID = '';
+let pressList = [];
 let gamepadCurrent = null;
 let poller = null; // timer identifier, allows removal of setInterval when gamepad is disconnected
 const socket = io.connect('//localhost:3000/');
@@ -24,7 +25,8 @@ const keyMap = {
     14: 'direction-left',
     15: 'direction-right'
 };
-
+// Easter egg
+const konamiCode = ['up', 'up', 'down', 'down', 'left', 'right', 'left', 'right', 'B', 'A'];
 
 /// jQuery events ///
 $('.pressable')
@@ -32,6 +34,14 @@ $('.pressable')
         e.preventDefault(); // don't actually follow hrefs
         currentPressID = this.id;
         currentPress = currentPressID.split('-')[1];
+        pressList.push(currentPress);
+        if (pressList.length > konamiCode.length) {
+            pressList.shift();
+        }
+        if (JSON.stringify(pressList) === JSON.stringify(konamiCode)) {
+            $('body').append('<div id="egg"></div>');
+            setTimeout(() => $('#egg').remove(), 4000);
+        }
 
         // highlight button press for a short time
         $(this).addClass('active');
@@ -41,6 +51,14 @@ $('.pressable')
         e.preventDefault(); // don't actually follow hrefs
         currentPressID = this.id;
         currentPress = currentPressID.split('-')[1];
+        pressList.push(currentPress);
+        if (pressList.length > konamiCode.length) {
+            pressList.shift();
+        }
+        if (JSON.stringify(pressList) === JSON.stringify(konamiCode)) {
+            $('body').append('<div id="egg"></div>');
+            setTimeout(() => $('#egg').remove(), 4000);
+        }
 
         // highlight button press for a short time
         $(this).addClass('active');
