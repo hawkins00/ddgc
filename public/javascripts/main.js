@@ -4,6 +4,7 @@ let currentPressID = '';
 let pressList = [];
 let gamepadCurrent = null;
 let poller = null; // timer identifier, allows removal of setInterval when gamepad is disconnected
+const threshold = 0.25; // threshold to surpass for analog buttons/sticks to count as pressed
 const socket = io.connect('//localhost:3000/');
 const tranDuration = 333; // duration of .active class transition
 // map of gamepad button number: html element id
@@ -24,6 +25,17 @@ const keyMap = {
     13: 'direction-down',
     14: 'direction-left',
     15: 'direction-right'
+};
+// map of analog stick number: html element id
+const stickMap = {
+    0: 'direction-up-left-stick',
+    1: 'direction-down-left-stick',
+    2: 'direction-left-left-stick',
+    3: 'direction-right-left-stick',
+    4: 'direction-up-right-stick',
+    5: 'direction-down-right-stick',
+    6: 'direction-left-right-stick',
+    7: 'direction-right-right-stick'
 };
 // Easter egg
 const konamiCode = ['up', 'up', 'down', 'down', 'left', 'right', 'left', 'right', 'B', 'A'];
@@ -145,7 +157,51 @@ function gamepadPoller() {
 
         // use the already-present click handler on buttons
         $('#' + keyMap[i]).click();
-        break;
+        return;
+    }
+
+    // scan axes in order until a pressed one is found, normalize angle to a cardinal direction
+    if (navigator.getGamepads()[gamepadCurrent].axes.length === 4) {
+        const val = navigator.getGamepads()[gamepadCurrent].axes;
+        const absVal = [Math.abs(val[0]), Math.abs(val[1]), Math.abs(val[2]), Math.abs(val[3])];
+        const leftStickHor = absVal[0] > absVal[1];
+        const rightStickHor = absVal[2] > absVal[3];
+        let stickPress = null;
+
+        // left stick left-right
+        if (leftStickHor && absVal[0] > threshold) {
+            if (val[0] > 0) {
+                stickPress = stickMap[3];
+            } else {
+                stickPress = stickMap[2];
+            }
+        // left stick up-down
+        } else if (!leftStickHor && absVal[1] > threshold) {
+            if (val[1] > 0) {
+                stickPress = stickMap[1];
+            } else {
+                stickPress = stickMap[0];
+            }
+        // right stick left-right
+        } else if (rightStickHor && absVal[2] > threshold) {
+            if (val[2] > 0) {
+                stickPress = stickMap[7];
+            } else {
+                stickPress = stickMap[6];
+            }
+        // right stick up-down
+        } else if (!rightStickHor && absVal[3] > threshold) {
+            if (val[3] > 0) {
+                stickPress = stickMap[5];
+            } else {
+                stickPress = stickMap[4];
+            }
+        }
+
+        // use the already-present click handler on buttons
+        if (stickPress !== null) {
+            $('#' + stickPress).click();
+        }
     }
 }
 
@@ -161,7 +217,7 @@ window.addEventListener("gamepadconnected", function(e) {
                 clearInterval(poller);
             }
             gamepadCurrent = e.gamepad.index;
-            poller = setInterval(gamepadPoller, 83); // ~12 times/second
+            poller = setInterval(gamepadPoller, 125); // 8 times/second
     }
 });
 
