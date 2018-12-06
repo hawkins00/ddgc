@@ -163,44 +163,17 @@ function gamepadPoller() {
     // scan axes in order until a pressed one is found, normalize angle to a cardinal direction
     if (navigator.getGamepads()[gamepadCurrent].axes.length === 4) {
         const val = navigator.getGamepads()[gamepadCurrent].axes;
-        const absVal = [Math.abs(val[0]), Math.abs(val[1]), Math.abs(val[2]), Math.abs(val[3])];
-        const leftStickHor = absVal[0] > absVal[1];
-        const rightStickHor = absVal[2] > absVal[3];
-        let stickPress = null;
-
-        // left stick left-right
-        if (leftStickHor && absVal[0] > threshold) {
-            if (val[0] > 0) {
-                stickPress = stickMap[3];
-            } else {
-                stickPress = stickMap[2];
-            }
-        // left stick up-down
-        } else if (!leftStickHor && absVal[1] > threshold) {
-            if (val[1] > 0) {
-                stickPress = stickMap[1];
-            } else {
-                stickPress = stickMap[0];
-            }
-        // right stick left-right
-        } else if (rightStickHor && absVal[2] > threshold) {
-            if (val[2] > 0) {
-                stickPress = stickMap[7];
-            } else {
-                stickPress = stickMap[6];
-            }
-        // right stick up-down
-        } else if (!rightStickHor && absVal[3] > threshold) {
-            if (val[3] > 0) {
-                stickPress = stickMap[5];
-            } else {
-                stickPress = stickMap[4];
+        const explodeVal = [-val[1], val[1], -val[0], val[0], -val[3], val[3], -val[2], val[2]];
+        let maxInd = 0;
+        for (let i = 1; i < explodeVal.length; i++) {
+            if (explodeVal[i] > explodeVal[maxInd]) {
+                maxInd = i;
             }
         }
 
-        // use the already-present click handler on buttons
-        if (stickPress !== null) {
-            $('#' + stickPress).click();
+        // use the already-present click handler on buttons, if threshold surpassed
+        if (explodeVal[maxInd] > threshold) {
+            $('#' + stickMap[maxInd]).click();
         }
     }
 }
