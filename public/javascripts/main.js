@@ -7,6 +7,8 @@ let poller = null; // timer identifier, allows removal of setInterval when gamep
 const threshold = 0.25; // threshold to surpass for analog buttons/sticks to count as pressed
 const socket = io.connect('//localhost:3000/');
 const tranDuration = 333; // duration of .active class transition
+const gamepadWidth = 1024; // default width of gamepad image
+const gamepadHeight = 768; // default height of gamepad image
 // map of gamepad button number: html element id
 const keyMap = {
     0: 'button-A',
@@ -40,64 +42,53 @@ const stickMap = {
 // Easter egg
 const konamiCode = ['up', 'up', 'down', 'down', 'left', 'right', 'left', 'right', 'B', 'A'];
 
+
 /// jQuery events ///
-$('.pressable')
-    .on('keypress', function(e) { // keypress
-        e.preventDefault(); // don't actually follow hrefs
-        currentPressID = this.id;
-        currentPress = currentPressID.split('-')[1];
-        pressList.push(currentPress);
-        if (pressList.length > konamiCode.length) {
-            pressList.shift();
-        }
-        if (JSON.stringify(pressList) === JSON.stringify(konamiCode)) {
-            $('body').append('<div id="egg"></div>');
-            setTimeout(() => $('#egg').remove(), 4000);
-        }
+$('.pressable').on('keypress', buttonHandler()).on('click', buttonHandler());
 
-        // highlight button press for a short time
-        $(this).addClass('active');
-        setTimeout(() => $(this).removeClass('active'), tranDuration);
-    })
-    .on('click', function(e) { // mouse click/enter
+function buttonHandler() {
+    return function (e) {
         e.preventDefault(); // don't actually follow hrefs
         currentPressID = this.id;
         currentPress = currentPressID.split('-')[1];
         pressList.push(currentPress);
-        if (pressList.length > konamiCode.length) {
-            pressList.shift();
-        }
-        if (JSON.stringify(pressList) === JSON.stringify(konamiCode)) {
-            $('body').append('<div id="egg"></div>');
-            setTimeout(() => $('#egg').remove(), 4000);
-        }
+        easterEgg();
 
         // highlight button press for a short time
         $(this).addClass('active');
         setTimeout(() => $(this).removeClass('active'), tranDuration);
 
-        // trying to differentiate mouse clicks from hitting enter, so we don't
+        // differentiate mouse clicks from hitting enter, so we don't
         // affect accessibility for keyboard users (by calling .blur())
-        if (e.screenX !== 0 || e.screenY !== 0) { // mouse click
+        if (e.type === 'click' && (e.screenX !== 0 || e.screenY !== 0)) { // mouse click
             setTimeout(() => $(this).blur(), tranDuration);
         }
-    });
+    };
+}
 
+const easterEgg = () => {
+    if (pressList.length > konamiCode.length) {
+        pressList.shift();
+    }
+    if (JSON.stringify(pressList) === JSON.stringify(konamiCode)) {
+        $('body').append('<div id="egg"></div>');
+        setTimeout(() => $('#egg').remove(), 4000);
+    }
+};
 
 /// scale gamepad image on load/resize to fit bottom 50% of screen ///
 const setScale = () => {
     let $wrapper = $('#wrapper');
-    // 1024px x 768px is the default size of #gamepad
-    let scaleW = window.innerWidth / 1024;
-    let scaleH = window.innerHeight / 768 / 2; // divide by 2 because height is 50%
+    let scaleW = window.innerWidth / gamepadWidth;
+    let scaleH = window.innerHeight / gamepadHeight / 2; // divide by 2 because height is 50% of page
     let scale = scaleH < scaleW ? scaleH : scaleW; // choose smaller of the scales to ensure fit
     $('#gamepad').css({
         'transform': 'scale(' + scale + ')'
     });
     // visibility starts hidden to hide sudden 'jumps' in controller scale before sizing
     $wrapper.css({
-        'width': 1024 * scale + 'px',
-        'height': 768 * scale + 'px',
+        'width': gamepadWidth * scale + 'px',
+        'height': gamepadHeight * scale + 'px',
         'visibility': 'visible'
     });
 };

@@ -24,9 +24,6 @@ body.yellow {
 /** video player **/
 
 #video {
-    /*
-    background-image: url(../images/static.gif);
-    */
     background-image: radial-gradient(#333, #000);
     border-bottom-left-radius: 20px;
     border-bottom-right-radius: 20px;
@@ -53,10 +50,6 @@ body.yellow {
     text-align: center;
     line-height: 2000px;
     position: absolute;
-    /*
-    top: 0;
-    left: calc(50% - 110px);
-    */
     z-index: 10;
 
     width: 2000px;
@@ -73,9 +66,6 @@ body.yellow {
             transparent 190deg, transparent 229deg, white 232deg, white 247deg,
             transparent 250deg, transparent 289deg, white 292deg, white 307deg,
             transparent 310deg, transparent 349deg, white 352deg, white 360deg);
-    /*
-    background: repeating-radial-gradient(black, black 20px, white 20px, white 40px);
-    */
 }
 #video>.loader>span {
     display: inline-block;
@@ -107,8 +97,8 @@ body.yellow {
 }
 
 #video .static {
-    width: 1000px;
-    height: 1000px;
+    width: 1066px;
+    height: 600px;
     background-image: url(../images/static.gif);
     z-index: 9;
     position: absolute;
@@ -141,7 +131,6 @@ body.yellow {
     transform-origin: top left;
     transition-duration: .5s;
 }
-/* MS Edge is scared of webp */
 .no-webp #gamepad {
     background: url(../images/controller.png) no-repeat center;
     background-size: contain;
