@@ -11,7 +11,7 @@ service such as Twitch or Mixer with a web browser and physical controller.
 ## Installation & Use
 
 1. Clone this repo
-2. `cd` to the <samp>ddgc</samp> directory
+2. `cd` to the <samp>dgc</samp> directory
 3. Run `nmp install`
 4. Run `nmp start`
 5. Open a browser to <samp>localhost:3000</samp> (or your environment's
