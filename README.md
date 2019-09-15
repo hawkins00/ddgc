@@ -1,12 +1,10 @@
 # ddgc 🎮
 
-**Distributed Democratic Game Control**
+**Distributed Distant Game Control**
 
-This software (when feature complete) will provide a system allowing numerous game
-players to work together to democratically choose moves for a shared
-online video game. The defining feature of this software is the ability
-to use an actual controller to enter input (instead of the usual chat
-input).
+This software allows a player to remotely interact with an online
+video game. The defining feature of this software is the ability to
+use an actual controller to enter input (instead of the usual chat input).
 
 ## Installation & Use
 
@@ -29,7 +27,7 @@ input).
   literal second hand in the lower right corner of the screen. The other
   is an orange highlight that appears around the button that was successfully
   sent to the server.
-* Up to five of the latest "winning" button presses will be visible on the
+* Up to five of the latest accepted button presses will be visible on the
   game screen at a time.
 * As this system is intended for older, emulated games, analog buttons
   and directional controls will be considered binary (pressed or not).
