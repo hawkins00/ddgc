@@ -1,10 +1,12 @@
-# ddgc 🎮
+# DGC 🎮
 
-**Distributed Distant Game Control**
+**Distributed Game Control**
 
 This software allows a player to remotely interact with an online
 video game. The defining feature of this software is the ability to
 use an actual controller to enter input (instead of the usual chat input).
+The expected use case would be to allow remote play of a game on a streaming
+service such as Twitch or Mixer with a web browser and physical controller.
 
 ## Installation & Use
 
