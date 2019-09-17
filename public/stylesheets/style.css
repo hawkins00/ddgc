@@ -84,7 +84,7 @@ body.yellow {
     animation: 5s ease-in-out 1 fade-output;
     animation-fill-mode: forwards;
     padding: 0 6px;
-    text-shadow: 0 0 15px 15px #0bf;
+    /* text-shadow: 0 0 15px 15px #0bf; */
     background-color: rgba(0, 0, 0, .75);
 }
 #video>#output>span:first-child {

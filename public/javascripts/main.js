@@ -44,30 +44,29 @@ const konamiCode = ['up', 'up', 'down', 'down', 'left', 'right', 'left', 'right'
 
 
 /// jQuery events ///
-$('.pressable').on('keypress', buttonHandler()).on('click', buttonHandler());
+$('.pressable').on('keypress', buttonHandler).on('click', buttonHandler);
 
-function buttonHandler() {
-    return function (e) {
-        e.preventDefault(); // don't actually follow hrefs
-        currentPressID = this.id;
-        currentPress = currentPressID.split('-')[1];
-        pressList.push(currentPress);
-        easterEgg();
+function buttonHandler(e) {
+    e.preventDefault(); // don't actually follow hrefs
+    currentPressID = this.id;
+    currentPress = currentPressID.split('-')[1];
+    pressList.push(currentPress);
+    easterEgg();
 
-        // highlight button press for a short time
-        $(this).addClass('active');
-        setTimeout(() => $(this).removeClass('active'), tranDuration);
+    // highlight button press for a short time
+    $(this).addClass('active');
+    setTimeout(() => $(this).removeClass('active'), tranDuration);
 
-        // differentiate mouse clicks from hitting enter, so we don't
-        // affect accessibility for keyboard users (by calling .blur())
-        if (e.type === 'click' && (e.screenX !== 0 || e.screenY !== 0)) { // mouse click
-            setTimeout(() => $(this).blur(), tranDuration);
-        }
-    };
+    // differentiate mouse clicks from hitting enter, so we don't
+    // affect accessibility for keyboard users (by calling .blur())
+    if (e.type === 'click' && (e.screenX !== 0 || e.screenY !== 0)) { // mouse click
+        setTimeout(() => $(this).blur(), tranDuration);
+    }
 }
 
+/// Check if the easter egg sequence has been entered ///
 const easterEgg = () => {
-    if (pressList.length > konamiCode.length) {
+    while (pressList.length > konamiCode.length) {
         pressList.shift();
     }
     if (JSON.stringify(pressList) === JSON.stringify(konamiCode)) {
